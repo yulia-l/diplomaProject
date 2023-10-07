@@ -24,33 +24,37 @@ public class FileService {
     }
 
     public void uploadFile(String authToken, String filename, MultipartFile file) {
-        logger.info("Uploading file: {}", filename);
+        logger.debug("Uploading file: {}", filename);
         // Получаем информацию о пользователе по токену аутентификации
-        User user = tokenService.getUserByAuthToken(authToken);
-        if (user == null) {
-            logger.error("Unauthorized access attempt with token: {}", authToken);
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = getUserByAuthToken(authToken);
         Long userId = user.getId();
 
         // Сохраняем информацию о файле в базе данных
-        FileEntity fileEntity = new FileEntity();
-        fileEntity.setFilename(filename);
-        fileEntity.setSize(file.getSize());
-        fileEntity.setUserId(userId);
-        fileRepository.save(fileEntity);
+        try {
+            FileEntity fileEntity = new FileEntity();
+            fileEntity.setFilename(filename);
+            fileEntity.setSize(file.getSize());
+            fileEntity.setUserId(userId);
+            fileRepository.save(fileEntity);
+        } catch (Exception e) {
+            logger.error("Error saving file: {}", filename, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ошибка сохранения файла");
+        }
 
         logger.info("File uploaded successfully: {}", filename);
     }
 
     @Transactional
     public void deleteFile(String authToken, String filename) {
-        logger.info("Deleting file: {}", filename);
+        logger.debug("Deleting file: {}", filename);
         // Получаем информацию о пользователе по токену аутентификации
-        User user = tokenService.getUserByAuthToken(authToken);
-        if (user == null) {
-            logger.error("Unauthorized access attempt with token: {}", authToken);
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        getUserByAuthToken(authToken);
+
+        // Проверяем, существует ли файл
+        FileEntity file = fileRepository.findByFilename(filename);
+        if (file == null) {
+            logger.error("File not found: {}", filename);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Файл не найден");
         }
 
         // Удаляем информацию о файле из базы данных
@@ -59,13 +63,9 @@ public class FileService {
     }
 
     public FileEntity downloadFile(String authToken, String filename) {
-        logger.info("Downloading file: {}", filename);
+        logger.debug("Downloading file: {}", filename);
         // Получаем информацию о пользователе по токену аутентификации
-        User user = tokenService.getUserByAuthToken(authToken);
-        if (user == null) {
-            logger.error("Unauthorized access attempt with token: {}", authToken);
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        getUserByAuthToken(authToken);
 
         // Получаем информацию о файле из базы данных
         FileEntity file = fileRepository.findByFilename(filename);
@@ -76,13 +76,9 @@ public class FileService {
 
     @Transactional
     public void editFileName(String authToken, String filename, String newFilename) {
-        logger.info("Editing file name from {} to {}", filename, newFilename);
+        logger.debug("Editing file name from {} to {}", filename, newFilename);
         // Получаем информацию о пользователе по токену аутентификации
-        User user = tokenService.getUserByAuthToken(authToken);
-        if (user == null) {
-            logger.error("Unauthorized access attempt with token: {}", authToken);
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        getUserByAuthToken(authToken);
 
         // Проверяем, существует ли файл
         FileEntity file = fileRepository.findByFilename(filename);
@@ -95,8 +91,22 @@ public class FileService {
         file.setFilename(newFilename);
 
         // Сохраняем изменения в базе данных
-        fileRepository.save(file);
+        try {
+            fileRepository.save(file);
+        } catch (Exception e) {
+            logger.error("Error editing file name from {} to {}", filename, newFilename, e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Ошибка изменения имени файла");
+        }
 
         logger.info("File name edited successfully from {} to {}", filename, newFilename);
+    }
+
+    private User getUserByAuthToken(String authToken) {
+        User user = tokenService.getUserByAuthToken(authToken);
+        if (user == null) {
+            logger.error("Unauthorized access attempt with token: {}", authToken);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        return user;
     }
 }

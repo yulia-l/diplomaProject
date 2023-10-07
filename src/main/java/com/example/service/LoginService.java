@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.entity.User;
 import com.example.exception.BadCredentialsException;
+import com.example.exception.UserNotFoundException;
 import com.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,25 +27,17 @@ public class LoginService {
         // Ищем пользователя по логину
         User user = userRepository.findByLogin(login);
         if (user == null) {
-            // Если пользователь не найден, регистрируем нового пользователя
-            register(login, password);
-            // Получаем идентификатор нового пользователя
-            Long userId = getUserIdByLogin(login);
-            // Генерируем токен и возвращаем
-            String token = tokenService.generateToken(userId);
-            logger.debug("User logged in successfully: {}", login);
-            return token;
-        } else {
-            // Если пользователь найден, проверяем пароль
-            if (!passwordEncoder.matches(password, user.getPassword())) {
-                logger.error("Invalid credentials for user: {}", login);
-                throw new BadCredentialsException();
-            }
-            // Генерируем токен и возвращаем
-            String token = tokenService.generateToken(user.getId());
-            logger.debug("User logged in successfully: {}", login);
-            return token;
+            throw new UserNotFoundException();
         }
+        // Если пользователь найден, проверяем пароль
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            logger.error("Invalid credentials for user: {}", login);
+            throw new BadCredentialsException();
+        }
+        // Генерируем токен и возвращаем
+        String token = tokenService.generateToken(user.getId());
+        logger.debug("User logged in successfully: {}", login);
+        return token;
     }
 
     public void logout(String token) {
