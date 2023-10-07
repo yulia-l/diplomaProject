@@ -4,33 +4,49 @@ import com.example.entity.Token;
 import com.example.repository.TokenRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.security.SecureRandom;
+import java.util.Base64;
 
 @Service
 public class TokenService {
-
+    private static final SecureRandom secureRandom = new SecureRandom();
+    private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder();
     private final TokenRepository tokenRepository;
 
     public TokenService(TokenRepository tokenRepository) {
         this.tokenRepository = tokenRepository;
     }
 
-    public boolean isValid(String authToken) {
-        // Проверяем, существует ли токен в базе данных
-        Token token = tokenRepository.findByToken(authToken);
-        return token != null;
+    public String generateToken(Long userId) {
+        // Генерируем новый токен
+        byte[] randomBytes = new byte[24];
+        secureRandom.nextBytes(randomBytes);
+        String token = base64Encoder.encodeToString(randomBytes);
+        // Сохраняем токен в базе данных
+        tokenRepository.save(new Token(token, userId));
+        return token;
     }
 
-    public String createToken(Long userId) {
-        // Создаем новый токен и сохраняем его в базе данных
-        String authToken = UUID.randomUUID().toString();
-        Token token = new Token(authToken, userId);
-        tokenRepository.save(token);
-        return authToken;
+    public boolean isValid(String token) {
+        // Проверяем наличие токена в базе данных
+        return tokenRepository.existsByToken(token);
     }
 
-    public void deleteToken(String authToken) {
+    public void removeToken(String token) {
         // Удаляем токен из базы данных
-        tokenRepository.deleteByToken(authToken);
+        tokenRepository.deleteByToken(token);
+    }
+
+    public Long getUserIdFromAuthToken(String authToken) {
+        // Ищем токен в базе данных
+        Token token = tokenRepository.findByToken(authToken);
+        if (token != null) {
+            // Возвращаем идентификатор пользователя, связанный с токеном
+            return token.getUserId();
+        } else {
+            // Токен не найден в базе данных
+            return null;
+        }
     }
 }
+

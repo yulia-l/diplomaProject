@@ -19,10 +19,14 @@ public class FileService {
         // Проверяем токен аутентификации
         checkAuthToken(authToken);
 
+        // Получаем идентификатор пользователя из токена аутентификации
+        Long userId = tokenService.getUserIdFromAuthToken(authToken);
+
         // Сохраняем информацию о файле в базе данных
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFilename(filename);
         fileEntity.setSize(file.getSize());
+        fileEntity.setUserId(userId); // Сохраняем идентификатор пользователя
         fileRepository.save(fileEntity);
     }
 
@@ -50,9 +54,8 @@ public class FileService {
         fileRepository.updateFilename(filename, newFilename);
     }
 
-    private void checkAuthToken(String authToken) {
-        if (!tokenService.isValid(authToken)) {
-            throw new RuntimeException("Недействительный токен аутентификации");
-        }
+    public boolean checkAuthToken(String authToken) {
+        // Проверяем токен аутентификации с помощью TokenService
+        return tokenService.isValid(authToken);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.service;
 
+import com.example.entity.FileEntity;
+import com.example.repository.FileRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,21 +14,14 @@ import java.util.List;
 
 @Service
 public class ListService {
+    private final FileRepository fileRepository;
 
-    public List<String> getFiles(String username) {
-        // Определяем путь к директории пользователя
-        Path userDir = Paths.get("/path/to/upload/dir", username);
+    public ListService(FileRepository fileRepository) {
+        this.fileRepository = fileRepository;
+    }
 
-        // Получаем список файлов в директории пользователя
-        List<String> files = new ArrayList<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(userDir)) {
-            for (Path file : stream) {
-                files.add(file.getFileName().toString());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка при получении списка файлов", e);
-        }
-
-        return files;
+    public List<FileEntity> getFiles(Integer limit) {
+        // Получаем список файлов из базы данных с помощью FileRepository
+        return fileRepository.findTopNById(limit);
     }
 }

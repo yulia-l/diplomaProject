@@ -12,6 +12,7 @@ public class FileEntity {
     private Long id;
     private String filename;
     private Long size;
+    private Long userId;
 
     public Long getId() {
         return id;
@@ -35,5 +36,13 @@ public class FileEntity {
 
     public void setSize(Long size) {
         this.size = size;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

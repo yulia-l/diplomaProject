@@ -1,6 +1,10 @@
 package com.example.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class LoginResponse {
+
+    @JsonProperty("auth-token")
     private String authToken;
 
     public LoginResponse(String authToken) {

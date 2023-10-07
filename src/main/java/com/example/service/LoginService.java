@@ -1,39 +1,69 @@
 package com.example.service;
 
 import com.example.entity.User;
+import com.example.exception.BadCredentialsException;
 import com.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class LoginService {
-
-    private final UserRepository userRepository;
     private final TokenService tokenService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public LoginService(UserRepository userRepository, TokenService tokenService) {
-        this.userRepository = userRepository;
+    public LoginService(TokenService tokenService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.tokenService = tokenService;
-    }
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;}
 
     public String login(String login, String password) {
-        // Проверяем учетные данные пользователя
+        // Ищем пользователя по логину
         User user = userRepository.findByLogin(login);
         if (user == null) {
-            // Создаем нового пользователя
-            user = new User();
-            user.setLogin(login);
-            user.setPassword(password);
-            userRepository.save(user);
-        } else if (!password.equals(user.getPassword())) {
-            throw new RuntimeException("Неверные учетные данные");
+            // Если пользователь не найден, регистрируем нового пользователя
+            register(login, password);
+            // Получаем идентификатор нового пользователя
+            Long userId = getUserIdByLogin(login);
+            // Генерируем токен и возвращаем
+            return tokenService.generateToken(userId);
+        } else {
+            // Если пользователь найден, проверяем пароль
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                throw new BadCredentialsException();
+            }
+            // Генерируем токен и возвращаем
+            return tokenService.generateToken(user.getId());
         }
-
-        // Создаем новый токен аутентификации
-        return tokenService.createToken(user.getId());
     }
 
-    public void logout(String authToken) {
-        // Удаляем токен аутентификации
-        tokenService.deleteToken(authToken);
+    public void logout(String token) {
+        // Удаляем токен
+        tokenService.removeToken(token);
+    }
+
+    private String getPasswordHashFromDatabase(String login) {
+        // Ищем пользователя по логину
+        User user = userRepository.findByLogin(login);
+        // Возвращаем хеш пароля пользователя
+        return user.getPassword();
+    }
+
+    private Long getUserIdByLogin(String login) {
+        // Ищем пользователя по логину
+        User user = userRepository.findByLogin(login);
+        // Возвращаем идентификатор пользователя
+        return user.getId();
+    }
+
+    public void register(String login, String password) {
+        // Кодируем пароль с использованием PasswordEncoder
+        String encodedPassword = passwordEncoder.encode(password);
+        // Создаем нового пользователя
+        User user = new User();
+        user.setLogin(login);
+        user.setPassword(encodedPassword);
+        // Сохраняем пользователя в базе данных
+        userRepository.save(user);
     }
 }
