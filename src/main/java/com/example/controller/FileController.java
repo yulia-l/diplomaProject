@@ -1,10 +1,11 @@
 package com.example.controller;
 
-import com.example.dto.EditFileNameRequest;
 import com.example.entity.FileEntity;
 import com.example.service.FileService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 @RestController
 @RequestMapping("/file")
 public class FileController {
@@ -36,7 +37,8 @@ public class FileController {
     @PutMapping
     public void editFileName(@RequestHeader("auth-token") String authToken,
                              @RequestParam("filename") String filename,
-                             @RequestBody EditFileNameRequest request) {
-        fileService.editFileName(authToken, filename, request.getNewFilename());
+                             @RequestBody Map<String, String> requestBody) {
+        String newFilename = requestBody.get("filename");
+        fileService.editFileName(authToken, filename, newFilename);
     }
 }

@@ -10,7 +10,6 @@ public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String token;
     private Long userId;
 
@@ -19,9 +18,7 @@ public class Token {
         this.userId = userId;
     }
 
-    public Token() {
-
-    }
+    public Token() { }
 
     public Long getId() {
         return id;

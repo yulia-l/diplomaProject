@@ -11,11 +11,12 @@ import java.util.List;
 
 @Repository
 public interface FileRepository extends JpaRepository<FileEntity, Long> {
+    // Удаляет файл по имени
     void deleteByFilename(String filename);
-    @Modifying
-    @Query("UPDATE FileEntity f SET f.filename = :newFilename WHERE f.filename = :filename")
-    void updateFilename(@Param("filename") String filename, @Param("newFilename") String newFilename);
+
+    // Находит файл по имени
     FileEntity findByFilename(String filename);
 
-    List<FileEntity> findTopNById(Integer limit);
+    // Находит все файлы, принадлежащие пользователю с заданным идентификатором
+    List<FileEntity> findAllByUserId(Long userId);
 }
