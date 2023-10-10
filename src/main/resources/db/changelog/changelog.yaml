@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: denisbykov
+      changes:
+        - createTable:
+            tableName: file_entity
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: filename
+                  type: varchar(255)
+              - column:
+                  name: size
+                  type: bigint
+              - column:
+                  name: user_id
+                  type: bigint
+              - column:
+                  name: content_type
+                  type: varchar(255)
+              - column:
+                  name: data
+                  type: bytea
+
+  - changeSet:
+      id: 2
+      author: denisbykov
+      changes:
+        - createTable:
+            tableName: token
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: token
+                  type: varchar(255)
+              - column:
+                  name: user_id
+                  type: bigint
+
+  - changeSet:
+      id: 3
+      author: denisbykov
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: login
+                  type: varchar(255)
+              - column:
+                  name: password
+                  type: varchar(255)
