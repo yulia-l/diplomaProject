@@ -23,6 +23,7 @@ public class FileService {
         this.fileRepository = fileRepository;
     }
 
+    @Transactional
     public void uploadFile(String authToken, String filename, MultipartFile file) {
         logger.debug("Uploading file: {}", filename);
         // Получаем информацию о пользователе по токену аутентификации
@@ -35,6 +36,11 @@ public class FileService {
             fileEntity.setFilename(filename);
             fileEntity.setSize(file.getSize());
             fileEntity.setUserId(userId);
+            fileEntity.setContentType(file.getContentType());
+            // Читаем содержимое файла в массив байтов
+            byte[] fileBytes = file.getBytes();
+            // Сохраняем массив байтов в базе данных
+            fileEntity.setData(fileBytes);
             fileRepository.save(fileEntity);
         } catch (Exception e) {
             logger.error("Error saving file: {}", filename, e);
@@ -62,16 +68,18 @@ public class FileService {
         logger.info("File deleted successfully: {}", filename);
     }
 
-    public FileEntity downloadFile(String authToken, String filename) {
+    public byte[] downloadFile(String authToken, String filename) {
         logger.debug("Downloading file: {}", filename);
         // Получаем информацию о пользователе по токену аутентификации
         getUserByAuthToken(authToken);
 
         // Получаем информацию о файле из базы данных
         FileEntity file = fileRepository.findByFilename(filename);
+        // Получаем бинарные данные файла
+        byte[] data = file.getData();
 
         logger.info("File downloaded successfully: {}", filename);
-        return file;
+        return data;
     }
 
     @Transactional

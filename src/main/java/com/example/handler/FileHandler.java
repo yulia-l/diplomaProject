@@ -1,6 +1,5 @@
 package com.example.handler;
 
-import com.example.entity.FileEntity;
 import com.example.service.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,11 +24,9 @@ public class FileHandler {
 
     }
 
-    public FileEntity handleDownloadFile(String authToken, String filename) {
+    public byte[] handleDownloadFile(String authToken, String filename) {
         // Скачиваем файл с помощью FileService
-        FileEntity file = fileService.downloadFile(authToken, filename);
-
-        return file;
+        return fileService.downloadFile(authToken, filename);
     }
 
     public void handleEditFileName(String authToken, String filename, String newFilename) {

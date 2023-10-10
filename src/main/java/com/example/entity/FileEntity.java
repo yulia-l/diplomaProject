@@ -10,6 +10,9 @@ public class FileEntity {
     private String filename;
     private Long size;
     private Long userId;
+    private String contentType;
+    @Column(columnDefinition = "BYTEA")
+    private byte[] data;
 
     public Long getId() {
         return id;
@@ -41,5 +44,21 @@ public class FileEntity {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
     }
 }

@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import com.example.entity.FileEntity;
 import com.example.handler.FileHandler;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,12 +35,13 @@ public class FileController {
     }
 
     @GetMapping
-    public FileEntity downloadFile(@RequestHeader("auth-token") String authToken,
-                                   @RequestParam("filename") String filename) {
+    public byte[] downloadFile(@RequestHeader("auth-token") String authToken,
+                               @RequestParam("filename") String filename) {
         logger.debug("Received download file request: {}", filename);
-        FileEntity file = fileHandler.handleDownloadFile(authToken, filename);
+        // Получаем бинарные данные файла из базы данных
+        byte[] data = fileHandler.handleDownloadFile(authToken, filename);
         logger.info("File downloaded successfully: {}", filename);
-        return file;
+        return data;
     }
 
     @PutMapping

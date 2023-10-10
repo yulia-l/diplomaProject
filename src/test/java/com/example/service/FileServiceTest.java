@@ -97,22 +97,28 @@ public class FileServiceTest {
 
     @Test
     public void testDownloadFileSuccess() {
+        // Настройка тестовых данных
         String authToken = "token";
         String filename = "file.txt";
         User user = new User();
         user.setId(1L);
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFilename(filename);
+        byte[] fileData = "test data".getBytes();
+        fileEntity.setData(fileData);
 
+        // Настройка поведения методов getUserByAuthToken и findByFilename
         when(tokenService.getUserByAuthToken(authToken)).thenReturn(user);
         when(fileRepository.findByFilename(filename)).thenReturn(fileEntity);
 
-        FileEntity result = fileService.downloadFile(authToken, filename);
+        // Вызов тестируемого метода
+        byte[] result = fileService.downloadFile(authToken, filename);
 
+        // Проверка результатов
         verify(tokenService).getUserByAuthToken(authToken);
         verify(fileRepository).findByFilename(filename);
 
-        assertEquals(fileEntity, result);
+        assertEquals(fileData, result);
     }
 
     @Test(expected = ResponseStatusException.class)
