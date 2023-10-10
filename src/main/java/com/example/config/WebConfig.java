@@ -22,7 +22,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedMethods(corsAllowedMethods)
-                .allowedOrigins(corsAllowedOrigins);
+                .allowedOrigins(corsAllowedOrigins)
+                .maxAge(3600);
     }
 
     @Override

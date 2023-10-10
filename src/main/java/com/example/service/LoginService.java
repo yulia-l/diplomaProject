@@ -47,20 +47,6 @@ public class LoginService {
         logger.debug("User logged out successfully");
     }
 
-    private String getPasswordHashFromDatabase(String login) {
-        // Ищем пользователя по логину
-        User user = userRepository.findByLogin(login);
-        // Возвращаем хеш пароля пользователя
-        return user.getPassword();
-    }
-
-    private Long getUserIdByLogin(String login) {
-        // Ищем пользователя по логину
-        User user = userRepository.findByLogin(login);
-        // Возвращаем идентификатор пользователя
-        return user.getId();
-    }
-
     public void register(String login, String password) {
         logger.debug("Registering new user: {}", login);
         // Кодируем пароль с использованием PasswordEncoder

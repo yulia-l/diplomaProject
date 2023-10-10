@@ -1,6 +1,5 @@
 package com.example.service;
 
-
 import com.example.dto.FileDTO;
 import com.example.entity.FileEntity;
 import com.example.entity.User;
@@ -8,7 +7,6 @@ import com.example.repository.FileRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +43,7 @@ public class ListService {
                 .map(file -> new FileDTO(file.getFilename(), file.getSize() == null ? 0 : file.getSize()))
                 .collect(Collectors.toList());
 
-        logger.info("Files retrieved successfully: {}", result.size());
+        logger.debug("Files retrieved successfully: {}", result.size());
         return result;
     }
 }
