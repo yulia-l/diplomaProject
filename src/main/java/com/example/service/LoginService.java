@@ -20,7 +20,8 @@ public class LoginService {
     public LoginService(TokenService tokenService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.tokenService = tokenService;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;}
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public String login(String login, String password) {
         logger.debug("Logging in user: {}", login);

@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: 1
-      author: denisbykov
+      author: yuliakiktenko
       changes:
         - createTable:
             tableName: file_entity
@@ -31,7 +31,7 @@ databaseChangeLog:
 
   - changeSet:
       id: 2
-      author: denisbykov
+      author: yuliakiktenko
       changes:
         - createTable:
             tableName: token
@@ -52,7 +52,7 @@ databaseChangeLog:
 
   - changeSet:
       id: 3
-      author: denisbykov
+      author: yuliakiktenko
       changes:
         - createTable:
             tableName: users

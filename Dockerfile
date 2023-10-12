@@ -8,10 +8,10 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
 EXPOSE 8085
 
-COPY target/DiplomCloud-0.0.1-SNAPSHOT.jar app.jar
+COPY target/diplomaProject-0.0.1-SNAPSHOT.jar app.jar
 
 CMD ["java", "-jar", "app.jar"]
 
 
-#docker build -t appdiplomcloud:latest .
-#docker run -itd --name appDiplomCloud -p 8085:8085 appdiplomcloud:latest
+#docker build -t diplomaProject:latest .
+#docker run -itd --name diplomaProject -p 8085:8085 appdiplomcloud:latest

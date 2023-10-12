@@ -18,7 +18,8 @@ public class Token {
         this.userId = userId;
     }
 
-    public Token() { }
+    public Token() {
+    }
 
     public Long getId() {
         return id;

@@ -30,6 +30,7 @@ public class LoginHandler {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Неверные учетные данные");
         }
     }
+
     public void handleLogout(String token) {
         // Вызываем метод сервиса для удаления токена
         loginService.logout(token);

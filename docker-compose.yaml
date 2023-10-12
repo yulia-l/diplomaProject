@@ -7,16 +7,16 @@ services:
     ports:
       - "8085:8085"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql:
-      - SPRING_DATASOURCE_USERNAME=
-      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/yuliaDB
+      - SPRING_DATASOURCE_USERNAME=yuliaL
+      - SPRING_DATASOURCE_PASSWORD=65412583Akn
     depends_on:
       - db
   db:
     image: postgres:latest
     environment:
-      - POSTGRES_DB=
-      - POSTGRES_USER=
-      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=yuliaDB
+      - POSTGRES_USER=yuliaL
+      - POSTGRES_PASSWORD=65412583Akn
     ports:
       - "5432:5432"

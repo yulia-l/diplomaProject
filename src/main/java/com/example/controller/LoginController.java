@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @RestController
 @RequestMapping
 public class LoginController {
@@ -34,6 +33,7 @@ public class LoginController {
         // Возвращаем ответ
         return ResponseEntity.ok(loginResponse);
     }
+
     // Метод для выхода из системы
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("auth-token") String token) {

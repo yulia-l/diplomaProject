@@ -4,6 +4,7 @@ import com.example.handler.FileHandler;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,9 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
     private final FileHandler fileHandler;
     private final Logger logger = LoggerFactory.getLogger(FileController.class);
+
     public FileController(FileHandler fileHandler) {
         this.fileHandler = fileHandler;
     }
+
     @PostMapping
     public void uploadFile(@RequestHeader("auth-token") String authToken,
                            @RequestParam("filename") String filename,

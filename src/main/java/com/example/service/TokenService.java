@@ -35,6 +35,7 @@ public class TokenService {
         logger.info("Token generated successfully for user: {}", userId);
         return token;
     }
+
     public void removeToken(String token) {
         logger.debug("Removing token: {}", token);
         // Удаляем токен из базы данных
